@@ -1,0 +1,1 @@
+// Todo: Trigger the autofill only when the user clicks on the extension icon
