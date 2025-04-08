@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Form Autofill Options</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    h1 {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+    input[type="text"], input[type="password"], textarea {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    button {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+  <h1>Form Autofill Options</h1>
+  <form id="options-form">
+    <label for="username">Default Username:</label>
+    <input type="text" id="username" name="username" placeholder="Enter your username">
+
+    <label for="password">Default Password:</label>
+    <input type="password" id="password" name="password" placeholder="Enter your password">
+
+    <label for="comment">Default TextArea Comment:</label>
+    <textarea id="comment" name="comment" rows="4" placeholder="Enter your comment"></textarea>
+
+    <button type="button" id="save-button">Save</button>
+  </form>
+
+  <script>
+    // Load saved options when the page loads
+    document.addEventListener('DOMContentLoaded', () => {
+      chrome.storage.sync.get(['username', 'password', 'comment'], (data) => {
+        if (data.username) document.getElementById('username').value = data.username;
+        if (data.password) document.getElementById('password').value = data.password;
+        if (data.comment) document.getElementById('comment').value = data.comment;
+      });
+    });
+
+    // Save options when the save button is clicked
+    document.getElementById('save-button').addEventListener('click', () => {
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      const comment = document.getElementById('comment').value;
+
+      chrome.storage.sync.set({ username, password, comment }, () => {
+        if (chrome.runtime.lastError) {
+          // Display error if something goes wrong
+          document.getElementById('status').textContent = `Error: ${chrome.runtime.lastError.message}`;
+          document.getElementById('status').classList.add('error');
+        } else {
+          // Display success message
+          document.getElementById('status').textContent = 'Options saved successfully!';
+          document.getElementById('status').classList.remove('error');
+        }
+      });
+    });
+  </script>
+</body>
+</html>
